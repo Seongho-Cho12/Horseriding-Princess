@@ -1,9 +1,0 @@
-﻿component Carrot {
-    asset_ref<CarrotAsset> Asset;  // 당근 아이템만 사용
-    bool PickedUp;                 // 수집 여부 확인
-}
-
-// 당근 아이템 수집 이벤트만 유지
-event OnCarrotCollected {
-    entity_ref CarrotEntity;
-}
