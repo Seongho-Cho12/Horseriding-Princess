@@ -1,0 +1,8 @@
+component AIDriver {
+    sbyte AIIndex;
+    FPVector3 TargetLocation;
+    FPVector3 NextTargetLocation;
+    asset_ref<AIDriverSettings> SettingsRef;
+    FP StationaryTime;
+}
+
