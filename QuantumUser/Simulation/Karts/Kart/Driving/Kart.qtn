@@ -18,6 +18,9 @@ component Kart {
     [ExcludeFromPrototype] FP Stamina;
     [ExcludeFromPrototype] FP BoostMultiplier;
     [ExcludeFromPrototype] FP BoostEnhancementTimer;
+
+    [ExcludeFromPrototype] bool isSlipstreaming;
+    [ExcludeFromPrototype] FP slipstreamTimer;
         
     asset_ref<KartStats> StatsAsset;
     asset_ref<KartVisuals> VisualAsset;

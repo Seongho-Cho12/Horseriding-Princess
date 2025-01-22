@@ -343,6 +343,20 @@ public unsafe class RaceUIController : QuantumCallbacks
             float staminaRatio = kart->Stamina.AsFloat / stats.maxStamina.AsFloat;
             _staminaBar.fillAmount = Mathf.Clamp01(staminaRatio);
 
+            // 슬립스트림 상태에 따른 색상 변경
+            if (kart->isSlipstreaming)
+            {
+                _staminaBar.color = new Color32(0x42, 0x5A, 0xDD, 0xff);  // 슬립스트림 시 파란색
+            }
+            else if (kart->BoostEnhancementTimer > 0)
+            {
+                _staminaBar.color = new Color32(0xDD, 0x42, 0x50, 0xff);  // 부스트 사용 시 빨간색
+            }
+            else
+            {
+                _staminaBar.color = new Color32(0x1F, 0xD3, 0x49, 0xff); // 기본 색상 (예: 녹색)
+            }
+
             // 스태미나 값 로그 출력
             Debug.Log($"Current Stamina: {kart->Stamina.AsFloat} / Max Stamina: {stats.maxStamina.AsFloat}");
         }

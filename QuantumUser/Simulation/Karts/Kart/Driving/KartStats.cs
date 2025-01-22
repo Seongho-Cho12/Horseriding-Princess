@@ -34,5 +34,6 @@ namespace Quantum
         public FP boostEnhancementMultiplier;  // 부스트 강화 배율
         public FP boostEnhancementDuration;    // 강화 지속 시간
         public FP boostEnhancementStaminaCost; // 강화 시 초기 소모량
+        public FP slipstreamStaminaRecovery;   // 슬립스트림 스태미나 회복량
     }
 }

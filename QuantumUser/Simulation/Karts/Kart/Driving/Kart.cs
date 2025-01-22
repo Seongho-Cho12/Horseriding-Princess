@@ -146,6 +146,8 @@ namespace Quantum
             ApplyStaminaConsumption(frame, filter.KartInput, filter.Entity);
             // 부스트 강화 관련
             ApplyBoostEnhancement(frame, filter.KartInput, ref this);
+            // 슬립스트림 관련
+            CheckSlipstream(frame, ref this, filter);
 
             ExternalForce = FPVector3.Zero;
         }
@@ -362,6 +364,53 @@ namespace Quantum
                     kart.BoostMultiplier = FP._1;  // 기본 부스트 배율로 복구
                 }
             }
+        }
+
+        private void CheckSlipstream(Frame frame, ref Kart kart, KartSystem.Filter filter)
+        {
+            if (!frame.Unsafe.TryGetPointer<Transform3D>(filter.Entity, out Transform3D* kartTransform))
+                return;
+
+            FPVector3 kartPosition = kartTransform->Position;
+
+            var allKarts = frame.Filter<Kart>();
+
+            EntityRef otherKartEntity;
+            Kart otherKart;
+
+            while (allKarts.Next(out otherKartEntity, out otherKart))
+            {
+                if (otherKartEntity == filter.Entity) continue;
+
+                if (frame.Unsafe.TryGetPointer<Transform3D>(otherKartEntity, out Transform3D* otherKartTransform))
+                {
+                    FPVector3 directionToOther = kartPosition - otherKartTransform->Position;
+                    FP distance = directionToOther.Magnitude;
+
+                    if (distance < FP.FromFloat_UNSAFE(5.0f))  // 슬립스트림 거리 조건
+                    {
+                        FP angle = FPVector3.Angle(otherKartTransform->Forward, directionToOther.Normalized);
+                        if (angle < FP.FromFloat_UNSAFE(30.0f))  // 방향 각도 조건
+                        {
+                            kart.isSlipstreaming = true;
+                            kart.slipstreamTimer += frame.DeltaTime;
+
+                            KartStats stats = frame.FindAsset(kart.StatsAsset);
+
+                            // 슬립스트림 효과 적용
+                            kart.Stamina += stats.slipstreamStaminaRecovery * frame.DeltaTime;
+
+                            // 슬립스트림 시 드래그 0 적용
+                            stats.drag = FP._0;
+
+                            return;
+                        }
+                    }
+                }
+            }
+
+            kart.isSlipstreaming = false;
+            kart.slipstreamTimer = FP._0;
         }
     }
 }

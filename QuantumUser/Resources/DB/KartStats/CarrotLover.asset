@@ -288,13 +288,13 @@ MonoBehaviour:
       TangentModeRight: 0
       WeightedMode: 0
   maxSpeed:
-    RawValue: 2621440
+    RawValue: 2293760
   minThrottle:
     RawValue: -26214
   gravity:
-    RawValue: -1179648
+    RawValue: -1114112
   drag:
-    RawValue: 65536
+    RawValue: 6554
   rotationCorrectionRate:
     RawValue: 262144
   rotationSmoothingThreshold:
@@ -303,21 +303,27 @@ MonoBehaviour:
     RawValue: 1638400
   groundDistance:
     RawValue: -3276
-  slowDecayRate:
-    RawValue: 0
   StaminaConsumption:
-    RawValue: 0
+    RawValue: 98304
   CarrotRecovery:
-    RawValue: 0
+    RawValue: 1638400
   NaturalRecovery:
-    RawValue: 0
+    RawValue: 327680
   BoostMultiplier:
-    RawValue: 0
+    RawValue: 262144
   maxStamina:
-    RawValue: 0
+    RawValue: 13762560
   corneringStaminaMultiplier:
-    RawValue: 0
+    RawValue: 114688
   weakBoostStaminaCost:
-    RawValue: 0
+    RawValue: 327680
   strongBoostStaminaCost:
-    RawValue: 0
+    RawValue: 983040
+  boostEnhancementMultiplier:
+    RawValue: 327680
+  boostEnhancementDuration:
+    RawValue: 196608
+  boostEnhancementStaminaCost:
+    RawValue: 1966080
+  slipstreamStaminaRecovery:
+    RawValue: 196608

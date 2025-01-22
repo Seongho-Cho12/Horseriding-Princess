@@ -825,21 +825,21 @@ namespace Quantum {
   }
   [StructLayout(LayoutKind.Explicit)]
   public unsafe partial struct Kart : Quantum.IComponent {
-    public const Int32 SIZE = 248;
+    public const Int32 SIZE = 256;
     public const Int32 ALIGNMENT = 8;
-    [FieldOffset(104)]
+    [FieldOffset(112)]
     [ExcludeFromPrototype()]
     public ComponentPrototypeRef Prototype;
-    [FieldOffset(192)]
+    [FieldOffset(200)]
     [ExcludeFromPrototype()]
     public FPVector3 Velocity;
-    [FieldOffset(168)]
+    [FieldOffset(176)]
     [ExcludeFromPrototype()]
     public FPVector3 OldVelocity;
-    [FieldOffset(144)]
+    [FieldOffset(152)]
     [ExcludeFromPrototype()]
     public FPVector3 ExternalForce;
-    [FieldOffset(120)]
+    [FieldOffset(128)]
     [ExcludeFromPrototype()]
     public FPVector3 CollisionPositionCompensation;
     [FieldOffset(56)]
@@ -854,7 +854,7 @@ namespace Quantum {
     [FieldOffset(80)]
     [ExcludeFromPrototype()]
     public FP SurfaceHandlingMultiplier;
-    [FieldOffset(216)]
+    [FieldOffset(224)]
     [ExcludeFromPrototype()]
     public FPQuaternion TargetRotation;
     [FieldOffset(0)]
@@ -869,7 +869,7 @@ namespace Quantum {
     [FieldOffset(48)]
     [ExcludeFromPrototype()]
     public FP OffroadTime;
-    [FieldOffset(96)]
+    [FieldOffset(104)]
     [ExcludeFromPrototype()]
     public PhysicsQueryRef OverlapQuery;
     [FieldOffset(64)]
@@ -881,6 +881,12 @@ namespace Quantum {
     [FieldOffset(32)]
     [ExcludeFromPrototype()]
     public FP BoostEnhancementTimer;
+    [FieldOffset(4)]
+    [ExcludeFromPrototype()]
+    public QBoolean isSlipstreaming;
+    [FieldOffset(96)]
+    [ExcludeFromPrototype()]
+    public FP slipstreamTimer;
     [FieldOffset(8)]
     public AssetRef<KartStats> StatsAsset;
     [FieldOffset(16)]
@@ -906,6 +912,8 @@ namespace Quantum {
         hash = hash * 31 + Stamina.GetHashCode();
         hash = hash * 31 + BoostMultiplier.GetHashCode();
         hash = hash * 31 + BoostEnhancementTimer.GetHashCode();
+        hash = hash * 31 + isSlipstreaming.GetHashCode();
+        hash = hash * 31 + slipstreamTimer.GetHashCode();
         hash = hash * 31 + StatsAsset.GetHashCode();
         hash = hash * 31 + VisualAsset.GetHashCode();
         return hash;
@@ -915,6 +923,7 @@ namespace Quantum {
         var p = (Kart*)ptr;
         serializer.Stream.Serialize(&p->GroundedWheels);
         serializer.Stream.Serialize(&p->OffroadWheels);
+        QBoolean.Serialize(&p->isSlipstreaming, serializer);
         AssetRef.Serialize(&p->StatsAsset, serializer);
         AssetRef.Serialize(&p->VisualAsset, serializer);
         FP.Serialize(&p->AirTime, serializer);
@@ -926,6 +935,7 @@ namespace Quantum {
         FP.Serialize(&p->SurfaceFrictionMultiplier, serializer);
         FP.Serialize(&p->SurfaceHandlingMultiplier, serializer);
         FP.Serialize(&p->SurfaceSpeedMultiplier, serializer);
+        FP.Serialize(&p->slipstreamTimer, serializer);
         PhysicsQueryRef.Serialize(&p->OverlapQuery, serializer);
         ComponentPrototypeRef.Serialize(&p->Prototype, serializer);
         FPVector3.Serialize(&p->CollisionPositionCompensation, serializer);
