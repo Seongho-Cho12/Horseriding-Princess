@@ -1,5 +1,6 @@
 ﻿component KartInput {
     [ExcludeFromPrototype] bool weakBoostPressed;
+    [ExcludeFromPrototype] bool boostEnhancementPressed;
     [ExcludeFromPrototype] FP Steering;    
     [ExcludeFromPrototype] button Drifting;
     [ExcludeFromPrototype] FP PreviousSteering;    
@@ -9,4 +10,5 @@
     [ExcludeFromPrototype] FP DriftingInputTime;    
     [ExcludeFromPrototype] FP SteeringOffset;
     [ExcludeFromPrototype] bool PreviousBoostPressed;
+    [ExcludeFromPrototype] bool PreviousBoostEnhancementPressed;
 }

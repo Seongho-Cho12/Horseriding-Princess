@@ -31,5 +31,8 @@ namespace Quantum
         public FP corneringStaminaMultiplier;  // 코너링 스태미나 소모 배율
         public FP weakBoostStaminaCost;       // 약한 부스트 스태미나 고정 소모량
         public FP strongBoostStaminaCost;     // 강한 부스트 스태미나 고정 소모량
+        public FP boostEnhancementMultiplier;  // 부스트 강화 배율
+        public FP boostEnhancementDuration;    // 강화 지속 시간
+        public FP boostEnhancementStaminaCost; // 강화 시 초기 소모량
     }
 }

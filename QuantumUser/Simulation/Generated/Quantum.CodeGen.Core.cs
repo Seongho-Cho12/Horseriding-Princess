@@ -68,6 +68,7 @@ namespace Quantum {
     Drift = 1 << 0,
     Powerup = 1 << 1,
     Respawn = 1 << 2,
+    BoostEnhancement = 1 << 3,
   }
   public static unsafe partial class FlagsExtensions {
     public static Boolean IsFlagSet(this InputButtons self, InputButtons flag) {
@@ -441,14 +442,16 @@ namespace Quantum {
   }
   [StructLayout(LayoutKind.Explicit)]
   public unsafe partial struct Input {
-    public const Int32 SIZE = 40;
+    public const Int32 SIZE = 52;
     public const Int32 ALIGNMENT = 4;
-    [FieldOffset(4)]
-    public Button Drift;
     [FieldOffset(16)]
-    public Button Powerup;
+    public Button Drift;
     [FieldOffset(28)]
+    public Button Powerup;
+    [FieldOffset(40)]
     public Button Respawn;
+    [FieldOffset(4)]
+    public Button BoostEnhancement;
     [FieldOffset(0)]
     public Byte Encoded;
     public override Int32 GetHashCode() {
@@ -457,6 +460,7 @@ namespace Quantum {
         hash = hash * 31 + Drift.GetHashCode();
         hash = hash * 31 + Powerup.GetHashCode();
         hash = hash * 31 + Respawn.GetHashCode();
+        hash = hash * 31 + BoostEnhancement.GetHashCode();
         hash = hash * 31 + Encoded.GetHashCode();
         return hash;
       }
@@ -469,6 +473,7 @@ namespace Quantum {
         case InputButtons.Drift: return Drift.IsDown;
         case InputButtons.Powerup: return Powerup.IsDown;
         case InputButtons.Respawn: return Respawn.IsDown;
+        case InputButtons.BoostEnhancement: return BoostEnhancement.IsDown;
         default: return false;
       }
     }
@@ -477,12 +482,14 @@ namespace Quantum {
         case InputButtons.Drift: return Drift.WasPressed;
         case InputButtons.Powerup: return Powerup.WasPressed;
         case InputButtons.Respawn: return Respawn.WasPressed;
+        case InputButtons.BoostEnhancement: return BoostEnhancement.WasPressed;
         default: return false;
       }
     }
     static partial void SerializeCodeGen(void* ptr, FrameSerializer serializer) {
         var p = (Input*)ptr;
         serializer.Stream.Serialize(&p->Encoded);
+        Button.Serialize(&p->BoostEnhancement, serializer);
         Button.Serialize(&p->Drift, serializer);
         Button.Serialize(&p->Powerup, serializer);
         Button.Serialize(&p->Respawn, serializer);
@@ -543,7 +550,7 @@ namespace Quantum {
   }
   [StructLayout(LayoutKind.Explicit)]
   public unsafe partial struct _globals_ {
-    public const Int32 SIZE = 808;
+    public const Int32 SIZE = 880;
     public const Int32 ALIGNMENT = 8;
     [FieldOffset(0)]
     public AssetRef<Map> Map;
@@ -567,12 +574,12 @@ namespace Quantum {
     public Int32 PlayerConnectedCount;
     [FieldOffset(556)]
     [FramePrinter.FixedArrayAttribute(typeof(Input), 6)]
-    private fixed Byte _input_[240];
-    [FieldOffset(800)]
+    private fixed Byte _input_[312];
+    [FieldOffset(872)]
     public BitSet6 PlayerLastConnectionState;
     public FixedArray<Input> input {
       get {
-        fixed (byte* p = _input_) { return new FixedArray<Input>(p, 40, 6); }
+        fixed (byte* p = _input_) { return new FixedArray<Input>(p, 52, 6); }
       }
     }
     public override Int32 GetHashCode() {
@@ -818,36 +825,36 @@ namespace Quantum {
   }
   [StructLayout(LayoutKind.Explicit)]
   public unsafe partial struct Kart : Quantum.IComponent {
-    public const Int32 SIZE = 232;
+    public const Int32 SIZE = 248;
     public const Int32 ALIGNMENT = 8;
-    [FieldOffset(88)]
-    [ExcludeFromPrototype()]
-    public ComponentPrototypeRef Prototype;
-    [FieldOffset(176)]
-    [ExcludeFromPrototype()]
-    public FPVector3 Velocity;
-    [FieldOffset(152)]
-    [ExcludeFromPrototype()]
-    public FPVector3 OldVelocity;
-    [FieldOffset(128)]
-    [ExcludeFromPrototype()]
-    public FPVector3 ExternalForce;
     [FieldOffset(104)]
     [ExcludeFromPrototype()]
-    public FPVector3 CollisionPositionCompensation;
-    [FieldOffset(40)]
+    public ComponentPrototypeRef Prototype;
+    [FieldOffset(192)]
     [ExcludeFromPrototype()]
-    public FP SidewaysSpeedSqr;
+    public FPVector3 Velocity;
+    [FieldOffset(168)]
+    [ExcludeFromPrototype()]
+    public FPVector3 OldVelocity;
+    [FieldOffset(144)]
+    [ExcludeFromPrototype()]
+    public FPVector3 ExternalForce;
+    [FieldOffset(120)]
+    [ExcludeFromPrototype()]
+    public FPVector3 CollisionPositionCompensation;
     [FieldOffset(56)]
     [ExcludeFromPrototype()]
-    public FP SurfaceFrictionMultiplier;
+    public FP SidewaysSpeedSqr;
     [FieldOffset(72)]
     [ExcludeFromPrototype()]
+    public FP SurfaceFrictionMultiplier;
+    [FieldOffset(88)]
+    [ExcludeFromPrototype()]
     public FP SurfaceSpeedMultiplier;
-    [FieldOffset(64)]
+    [FieldOffset(80)]
     [ExcludeFromPrototype()]
     public FP SurfaceHandlingMultiplier;
-    [FieldOffset(200)]
+    [FieldOffset(216)]
     [ExcludeFromPrototype()]
     public FPQuaternion TargetRotation;
     [FieldOffset(0)]
@@ -859,15 +866,21 @@ namespace Quantum {
     [FieldOffset(24)]
     [ExcludeFromPrototype()]
     public FP AirTime;
-    [FieldOffset(32)]
-    [ExcludeFromPrototype()]
-    public FP OffroadTime;
-    [FieldOffset(80)]
-    [ExcludeFromPrototype()]
-    public PhysicsQueryRef OverlapQuery;
     [FieldOffset(48)]
     [ExcludeFromPrototype()]
+    public FP OffroadTime;
+    [FieldOffset(96)]
+    [ExcludeFromPrototype()]
+    public PhysicsQueryRef OverlapQuery;
+    [FieldOffset(64)]
+    [ExcludeFromPrototype()]
     public FP Stamina;
+    [FieldOffset(40)]
+    [ExcludeFromPrototype()]
+    public FP BoostMultiplier;
+    [FieldOffset(32)]
+    [ExcludeFromPrototype()]
+    public FP BoostEnhancementTimer;
     [FieldOffset(8)]
     public AssetRef<KartStats> StatsAsset;
     [FieldOffset(16)]
@@ -891,6 +904,8 @@ namespace Quantum {
         hash = hash * 31 + OffroadTime.GetHashCode();
         hash = hash * 31 + OverlapQuery.GetHashCode();
         hash = hash * 31 + Stamina.GetHashCode();
+        hash = hash * 31 + BoostMultiplier.GetHashCode();
+        hash = hash * 31 + BoostEnhancementTimer.GetHashCode();
         hash = hash * 31 + StatsAsset.GetHashCode();
         hash = hash * 31 + VisualAsset.GetHashCode();
         return hash;
@@ -903,6 +918,8 @@ namespace Quantum {
         AssetRef.Serialize(&p->StatsAsset, serializer);
         AssetRef.Serialize(&p->VisualAsset, serializer);
         FP.Serialize(&p->AirTime, serializer);
+        FP.Serialize(&p->BoostEnhancementTimer, serializer);
+        FP.Serialize(&p->BoostMultiplier, serializer);
         FP.Serialize(&p->OffroadTime, serializer);
         FP.Serialize(&p->SidewaysSpeedSqr, serializer);
         FP.Serialize(&p->Stamina, serializer);
@@ -990,44 +1007,51 @@ namespace Quantum {
   }
   [StructLayout(LayoutKind.Explicit)]
   public unsafe partial struct KartInput : Quantum.IComponent {
-    public const Int32 SIZE = 80;
+    public const Int32 SIZE = 88;
     public const Int32 ALIGNMENT = 8;
-    [FieldOffset(76)]
+    [FieldOffset(84)]
     private fixed Byte _alignment_padding_[4];
-    [FieldOffset(8)]
-    [ExcludeFromPrototype()]
-    public QBoolean weakBoostPressed;
-    [FieldOffset(48)]
-    [ExcludeFromPrototype()]
-    public FP Steering;
-    [FieldOffset(64)]
-    [ExcludeFromPrototype()]
-    public Button Drifting;
-    [FieldOffset(32)]
-    [ExcludeFromPrototype()]
-    public FP PreviousSteering;
-    [FieldOffset(4)]
-    [ExcludeFromPrototype()]
-    public QBoolean PreviousDrifting;
-    [FieldOffset(40)]
-    [ExcludeFromPrototype()]
-    public FP SameSteeringTime;
-    [FieldOffset(24)]
-    [ExcludeFromPrototype()]
-    public FP NoSteeringTime;
     [FieldOffset(16)]
     [ExcludeFromPrototype()]
-    public FP DriftingInputTime;
+    public QBoolean weakBoostPressed;
+    [FieldOffset(12)]
+    [ExcludeFromPrototype()]
+    public QBoolean boostEnhancementPressed;
     [FieldOffset(56)]
     [ExcludeFromPrototype()]
+    public FP Steering;
+    [FieldOffset(72)]
+    [ExcludeFromPrototype()]
+    public Button Drifting;
+    [FieldOffset(40)]
+    [ExcludeFromPrototype()]
+    public FP PreviousSteering;
+    [FieldOffset(8)]
+    [ExcludeFromPrototype()]
+    public QBoolean PreviousDrifting;
+    [FieldOffset(48)]
+    [ExcludeFromPrototype()]
+    public FP SameSteeringTime;
+    [FieldOffset(32)]
+    [ExcludeFromPrototype()]
+    public FP NoSteeringTime;
+    [FieldOffset(24)]
+    [ExcludeFromPrototype()]
+    public FP DriftingInputTime;
+    [FieldOffset(64)]
+    [ExcludeFromPrototype()]
     public FP SteeringOffset;
-    [FieldOffset(0)]
+    [FieldOffset(4)]
     [ExcludeFromPrototype()]
     public QBoolean PreviousBoostPressed;
+    [FieldOffset(0)]
+    [ExcludeFromPrototype()]
+    public QBoolean PreviousBoostEnhancementPressed;
     public override Int32 GetHashCode() {
       unchecked { 
         var hash = 20693;
         hash = hash * 31 + weakBoostPressed.GetHashCode();
+        hash = hash * 31 + boostEnhancementPressed.GetHashCode();
         hash = hash * 31 + Steering.GetHashCode();
         hash = hash * 31 + Drifting.GetHashCode();
         hash = hash * 31 + PreviousSteering.GetHashCode();
@@ -1037,13 +1061,16 @@ namespace Quantum {
         hash = hash * 31 + DriftingInputTime.GetHashCode();
         hash = hash * 31 + SteeringOffset.GetHashCode();
         hash = hash * 31 + PreviousBoostPressed.GetHashCode();
+        hash = hash * 31 + PreviousBoostEnhancementPressed.GetHashCode();
         return hash;
       }
     }
     public static void Serialize(void* ptr, FrameSerializer serializer) {
         var p = (KartInput*)ptr;
+        QBoolean.Serialize(&p->PreviousBoostEnhancementPressed, serializer);
         QBoolean.Serialize(&p->PreviousBoostPressed, serializer);
         QBoolean.Serialize(&p->PreviousDrifting, serializer);
+        QBoolean.Serialize(&p->boostEnhancementPressed, serializer);
         QBoolean.Serialize(&p->weakBoostPressed, serializer);
         FP.Serialize(&p->DriftingInputTime, serializer);
         FP.Serialize(&p->NoSteeringTime, serializer);
@@ -1444,6 +1471,7 @@ namespace Quantum {
       i->Drift = i->Drift.Update(this.Number, input.Drift);
       i->Powerup = i->Powerup.Update(this.Number, input.Powerup);
       i->Respawn = i->Respawn.Update(this.Number, input.Respawn);
+      i->BoostEnhancement = i->BoostEnhancement.Update(this.Number, input.BoostEnhancement);
       i->Encoded = input.Encoded;
     }
     public Input* GetPlayerInput(PlayerRef player) {

@@ -144,6 +144,8 @@ namespace Quantum
             LimitVelocity(frame, filter.Entity);
             // 스태미나 관련
             ApplyStaminaConsumption(frame, filter.KartInput, filter.Entity);
+            // 부스트 강화 관련
+            ApplyBoostEnhancement(frame, filter.KartInput, ref this);
 
             ExternalForce = FPVector3.Zero;
         }
@@ -308,7 +310,11 @@ namespace Quantum
                     {
                         // 스태미나 소모 및 속도 증가 적용
                         kart->Stamina -= stats.weakBoostStaminaCost;
-                        kart->Velocity += kart->Velocity.Normalized * stats.BoostMultiplier * 3;
+                        if (kart->BoostMultiplier <= FP._1)
+                        {
+                            kart->BoostMultiplier = FP._1;
+                        }
+                        kart->Velocity += kart->Velocity.Normalized * stats.BoostMultiplier * kart->BoostMultiplier;
                         kart->Velocity = FPVector3.ClampMagnitude(kart->Velocity, stats.maxSpeed);
 
                         // 부스트 적용 후 입력 초기화
@@ -332,6 +338,29 @@ namespace Quantum
                 kart->Stamina = FPMath.Max(kart->Stamina, FP._0);
 
                 frame.Set(entity, *kart);
+            }
+        }
+
+        private void ApplyBoostEnhancement(Frame frame, KartInput* input, ref Kart kart)
+        {
+            KartStats stats = frame.FindAsset(kart.StatsAsset);
+
+            if (input->boostEnhancementPressed && kart.Stamina >= stats.boostEnhancementStaminaCost)
+            {
+                kart.Stamina -= stats.boostEnhancementStaminaCost;
+                kart.BoostMultiplier = stats.boostEnhancementMultiplier;
+                kart.BoostEnhancementTimer = stats.boostEnhancementDuration;
+                Debug.Log($"Boost Enhancement Activated! New Multiplier: {kart.BoostMultiplier.AsFloat}");
+            }
+
+            // 부스트 강화 타이머 감소 처리
+            if (kart.BoostEnhancementTimer > FP._0)
+            {
+                kart.BoostEnhancementTimer -= frame.DeltaTime;
+                if (kart.BoostEnhancementTimer <= FP._0)
+                {
+                    kart.BoostMultiplier = FP._1;  // 기본 부스트 배율로 복구
+                }
             }
         }
     }

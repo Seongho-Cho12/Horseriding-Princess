@@ -29,6 +29,17 @@ namespace Quantum
                 weakBoostPressed = false;
             }
 
+            if (input.BoostEnhancement && !PreviousBoostEnhancementPressed)
+            {
+                boostEnhancementPressed = true;
+            }
+            else
+            {
+                boostEnhancementPressed = false;
+            }
+
+            PreviousBoostEnhancementPressed = input.BoostEnhancementPressed;
+
             // 부스트 입력 상태 갱신
             PreviousBoostPressed = input.Direction.Y > FP._0;
 

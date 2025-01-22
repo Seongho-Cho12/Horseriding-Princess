@@ -191,12 +191,14 @@ namespace Quantum.Prototypes {
     public Button Drift;
     public Button Powerup;
     public Button Respawn;
+    public Button BoostEnhancement;
     public Byte Encoded;
     partial void MaterializeUser(Frame frame, ref Quantum.Input result, in PrototypeMaterializationContext context);
     public void Materialize(Frame frame, ref Quantum.Input result, in PrototypeMaterializationContext context = default) {
         result.Drift = this.Drift;
         result.Powerup = this.Powerup;
         result.Respawn = this.Respawn;
+        result.BoostEnhancement = this.BoostEnhancement;
         result.Encoded = this.Encoded;
         MaterializeUser(frame, ref result, in context);
     }

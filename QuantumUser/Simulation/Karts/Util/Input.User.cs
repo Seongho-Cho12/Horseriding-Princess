@@ -32,5 +32,11 @@ namespace Quantum
             int angle = (directionEncoded - 1) * 2;
             return FPVector2.Rotate(FPVector2.Up, angle * FP.Deg2Rad);
         }
+
+                // 부스트 강화 입력 처리 (BoostEnhancement 버튼 상태 확인)
+        public bool BoostEnhancementPressed
+        {
+            get => BoostEnhancement;
+        }
     }
 }

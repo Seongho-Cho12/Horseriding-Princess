@@ -16,6 +16,8 @@ component Kart {
     [ExcludeFromPrototype] PhysicsQueryRef OverlapQuery;
 
     [ExcludeFromPrototype] FP Stamina;
+    [ExcludeFromPrototype] FP BoostMultiplier;
+    [ExcludeFromPrototype] FP BoostEnhancementTimer;
         
     asset_ref<KartStats> StatsAsset;
     asset_ref<KartVisuals> VisualAsset;

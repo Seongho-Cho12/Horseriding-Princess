@@ -17,6 +17,7 @@ public class LocalInput : MonoBehaviour
         input.Drift = UnityEngine.Input.GetButton("Jump");
         input.Powerup = UnityEngine.Input.GetButton("Fire1");
         input.Respawn = UnityEngine.Input.GetKey(KeyCode.R);
+        input.BoostEnhancement = UnityEngine.Input.GetKey(KeyCode.LeftShift);
 
         var x = UnityEngine.Input.GetAxis("Horizontal");
         var y = UnityEngine.Input.GetAxis("Vertical");

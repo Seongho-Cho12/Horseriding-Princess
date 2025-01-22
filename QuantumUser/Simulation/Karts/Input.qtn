@@ -3,5 +3,6 @@ input
     button Drift;
     button Powerup;
     button Respawn;
+    button BoostEnhancement;
     byte Encoded;
 }
