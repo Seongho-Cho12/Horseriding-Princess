@@ -148,6 +148,11 @@ namespace Quantum
             ApplyBoostEnhancement(frame, filter.KartInput, ref this);
             // 슬립스트림 관련
             CheckSlipstream(frame, ref this, filter);
+            // 최종 랩 부스트 관련
+            if (frame.Unsafe.TryGetPointer(filter.Entity, out RaceProgress* raceProgress))
+            {
+                CheckFinalLapBoost(frame, ref this, raceProgress);
+            }
 
             ExternalForce = FPVector3.Zero;
         }
@@ -317,7 +322,7 @@ namespace Quantum
                             kart->BoostMultiplier = FP._1;
                         }
                         kart->Velocity += kart->Velocity.Normalized * stats.BoostMultiplier * kart->BoostMultiplier;
-                        kart->Velocity = FPVector3.ClampMagnitude(kart->Velocity, stats.maxSpeed);
+                        kart->Velocity = FPVector3.ClampMagnitude(kart->Velocity, kart->MaxSpeed);
 
                         // 부스트 적용 후 입력 초기화
                         input->weakBoostPressed = false;
@@ -411,6 +416,23 @@ namespace Quantum
 
             kart.isSlipstreaming = false;
             kart.slipstreamTimer = FP._0;
+        }
+
+        private void CheckFinalLapBoost(Frame frame, ref Kart kart, RaceProgress* raceProgress)
+        {
+            KartStats stats = frame.FindAsset(kart.StatsAsset);
+
+            // 마지막 랩이며, 남은 체크포인트가 2개 이하인지 확인
+            if (raceProgress->CurrentLap == raceProgress->TotalLaps - 1 &&
+                raceProgress->TotalCheckpoints - raceProgress->TargetCheckpointIndex <= 2)
+            {
+                kart.MaxSpeed = stats.maxSpeed * 100;  // 최고속도 100배 증가
+                Debug.Log("Final Lap Boost Activated! Run!");
+            }
+            else
+            {
+                kart.MaxSpeed = stats.maxSpeed;  // 정상 속도 유지
+            }
         }
     }
 }

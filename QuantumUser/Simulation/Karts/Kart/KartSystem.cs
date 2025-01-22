@@ -194,8 +194,18 @@ namespace Quantum
         public void OnPlayerAdded(Frame frame, PlayerRef player, bool firstTime)
         {
             var data = frame.GetPlayerData(player);
-
             EntityRef kartEntity = SpawnKart(frame, data.KartVisuals, data.KartStats);
+
+            // RaceTrack 싱글턴 가져오기
+            if (frame.Unsafe.TryGetPointerSingleton<RaceTrack>(out RaceTrack* raceTrack))
+            {
+                if (frame.Unsafe.TryGetPointer<RaceProgress>(kartEntity, out RaceProgress* raceProgress))
+                {
+                    // GetCheckpoints() 메서드를 사용하여 체크포인트 리스트 가져오기
+                    var checkpoints = raceTrack->GetCheckpoints(frame);
+                    raceProgress->TotalCheckpoints = (sbyte)checkpoints.Count;
+                }
+            }
 
             var playerLink = new PlayerLink()
             {

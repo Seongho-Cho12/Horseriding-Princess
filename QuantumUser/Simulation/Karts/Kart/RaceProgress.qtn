@@ -7,6 +7,8 @@ component RaceProgress {
     [ExcludeFromPrototype]
     sbyte TotalLaps;
     [ExcludeFromPrototype]
+    sbyte TotalCheckpoints;
+    [ExcludeFromPrototype]
     bool Finished;
     [ExcludeFromPrototype]
     list<FP> LapTimes;

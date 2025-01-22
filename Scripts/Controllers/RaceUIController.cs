@@ -62,6 +62,10 @@ public unsafe class RaceUIController : QuantumCallbacks
     [Header("Stamina")]
     [SerializeField] private Image _staminaBar;
 
+    [Header("Spurt UI")]
+    [SerializeField] private GameObject _lastSpurtRoot;  // LastSpurtRoot 참조
+    [SerializeField] private TextMeshProUGUI _lastSpurtText;  // LastSpurtText 참조
+
     private UIState _currentUIState = UIState.Waiting;
     private int lastCountdownTimer = 100;
 
@@ -109,8 +113,10 @@ public unsafe class RaceUIController : QuantumCallbacks
             case UIState.InRace:
                 UpdateRaceTimeText();
                 UpdateStaminaUI();
+                UpdateSpurtUI();
                 break;
             case UIState.LocalFinished:
+                UpdateSpurtUI();
                 break;
             case UIState.RaceOver:
                 break;
@@ -363,6 +369,27 @@ public unsafe class RaceUIController : QuantumCallbacks
         else
         {
             Debug.LogWarning("Failed to retrieve Kart component for stamina.");
+        }
+    }
+
+    // 스퍼트 UI 상태 업데이트
+    private void UpdateSpurtUI()
+    {
+        if (_game.Frames.Predicted == null) return;
+
+        Frame f = _game.Frames.Predicted;
+        if (f.Unsafe.TryGetPointer(LocalPlayerManager.Instance.LocalPlayerEntity, out Kart* kart))
+        {
+            // 스퍼트 활성화 여부 확인
+            if (kart->MaxSpeed > FP._100 && _currentUIState == UIState.InRace)
+            {
+                _lastSpurtRoot.SetActive(true);
+                _lastSpurtText.text = "Last Spurt!";
+            }
+            else
+            {
+                _lastSpurtRoot.SetActive(false);
+            }
         }
     }
 }

@@ -825,36 +825,36 @@ namespace Quantum {
   }
   [StructLayout(LayoutKind.Explicit)]
   public unsafe partial struct Kart : Quantum.IComponent {
-    public const Int32 SIZE = 256;
+    public const Int32 SIZE = 264;
     public const Int32 ALIGNMENT = 8;
-    [FieldOffset(112)]
+    [FieldOffset(120)]
     [ExcludeFromPrototype()]
     public ComponentPrototypeRef Prototype;
-    [FieldOffset(200)]
+    [FieldOffset(208)]
     [ExcludeFromPrototype()]
     public FPVector3 Velocity;
-    [FieldOffset(176)]
+    [FieldOffset(184)]
     [ExcludeFromPrototype()]
     public FPVector3 OldVelocity;
-    [FieldOffset(152)]
+    [FieldOffset(160)]
     [ExcludeFromPrototype()]
     public FPVector3 ExternalForce;
-    [FieldOffset(128)]
+    [FieldOffset(136)]
     [ExcludeFromPrototype()]
     public FPVector3 CollisionPositionCompensation;
-    [FieldOffset(56)]
+    [FieldOffset(64)]
     [ExcludeFromPrototype()]
     public FP SidewaysSpeedSqr;
-    [FieldOffset(72)]
-    [ExcludeFromPrototype()]
-    public FP SurfaceFrictionMultiplier;
-    [FieldOffset(88)]
-    [ExcludeFromPrototype()]
-    public FP SurfaceSpeedMultiplier;
     [FieldOffset(80)]
     [ExcludeFromPrototype()]
+    public FP SurfaceFrictionMultiplier;
+    [FieldOffset(96)]
+    [ExcludeFromPrototype()]
+    public FP SurfaceSpeedMultiplier;
+    [FieldOffset(88)]
+    [ExcludeFromPrototype()]
     public FP SurfaceHandlingMultiplier;
-    [FieldOffset(224)]
+    [FieldOffset(232)]
     [ExcludeFromPrototype()]
     public FPQuaternion TargetRotation;
     [FieldOffset(0)]
@@ -866,15 +866,18 @@ namespace Quantum {
     [FieldOffset(24)]
     [ExcludeFromPrototype()]
     public FP AirTime;
-    [FieldOffset(48)]
+    [FieldOffset(56)]
     [ExcludeFromPrototype()]
     public FP OffroadTime;
-    [FieldOffset(104)]
+    [FieldOffset(112)]
     [ExcludeFromPrototype()]
     public PhysicsQueryRef OverlapQuery;
-    [FieldOffset(64)]
+    [FieldOffset(72)]
     [ExcludeFromPrototype()]
     public FP Stamina;
+    [FieldOffset(48)]
+    [ExcludeFromPrototype()]
+    public FP MaxSpeed;
     [FieldOffset(40)]
     [ExcludeFromPrototype()]
     public FP BoostMultiplier;
@@ -884,7 +887,7 @@ namespace Quantum {
     [FieldOffset(4)]
     [ExcludeFromPrototype()]
     public QBoolean isSlipstreaming;
-    [FieldOffset(96)]
+    [FieldOffset(104)]
     [ExcludeFromPrototype()]
     public FP slipstreamTimer;
     [FieldOffset(8)]
@@ -910,6 +913,7 @@ namespace Quantum {
         hash = hash * 31 + OffroadTime.GetHashCode();
         hash = hash * 31 + OverlapQuery.GetHashCode();
         hash = hash * 31 + Stamina.GetHashCode();
+        hash = hash * 31 + MaxSpeed.GetHashCode();
         hash = hash * 31 + BoostMultiplier.GetHashCode();
         hash = hash * 31 + BoostEnhancementTimer.GetHashCode();
         hash = hash * 31 + isSlipstreaming.GetHashCode();
@@ -929,6 +933,7 @@ namespace Quantum {
         FP.Serialize(&p->AirTime, serializer);
         FP.Serialize(&p->BoostEnhancementTimer, serializer);
         FP.Serialize(&p->BoostMultiplier, serializer);
+        FP.Serialize(&p->MaxSpeed, serializer);
         FP.Serialize(&p->OffroadTime, serializer);
         FP.Serialize(&p->SidewaysSpeedSqr, serializer);
         FP.Serialize(&p->Stamina, serializer);
@@ -1159,7 +1164,7 @@ namespace Quantum {
   }
   [StructLayout(LayoutKind.Explicit)]
   public unsafe partial struct RaceProgress : Quantum.IComponent {
-    public const Int32 SIZE = 40;
+    public const Int32 SIZE = 48;
     public const Int32 ALIGNMENT = 8;
     [FieldOffset(2)]
     [ExcludeFromPrototype()]
@@ -1167,28 +1172,31 @@ namespace Quantum {
     [FieldOffset(0)]
     [ExcludeFromPrototype()]
     public SByte CurrentLap;
-    [FieldOffset(3)]
-    [ExcludeFromPrototype()]
-    public SByte TotalLaps;
     [FieldOffset(4)]
     [ExcludeFromPrototype()]
+    public SByte TotalLaps;
+    [FieldOffset(3)]
+    [ExcludeFromPrototype()]
+    public SByte TotalCheckpoints;
+    [FieldOffset(8)]
+    [ExcludeFromPrototype()]
     public QBoolean Finished;
-    [FieldOffset(12)]
+    [FieldOffset(16)]
     [ExcludeFromPrototype()]
     public QListPtr<FP> LapTimes;
-    [FieldOffset(32)]
+    [FieldOffset(40)]
     [ExcludeFromPrototype()]
     public FP LapTimer;
     [FieldOffset(1)]
     [ExcludeFromPrototype()]
     public SByte Position;
-    [FieldOffset(24)]
+    [FieldOffset(32)]
     [ExcludeFromPrototype()]
     public FP FinishTime;
-    [FieldOffset(16)]
+    [FieldOffset(24)]
     [ExcludeFromPrototype()]
     public FP DistanceToCheckpoint;
-    [FieldOffset(8)]
+    [FieldOffset(12)]
     [ExcludeFromPrototype()]
     public QBoolean LastWrongWay;
     public override Int32 GetHashCode() {
@@ -1197,6 +1205,7 @@ namespace Quantum {
         hash = hash * 31 + TargetCheckpointIndex.GetHashCode();
         hash = hash * 31 + CurrentLap.GetHashCode();
         hash = hash * 31 + TotalLaps.GetHashCode();
+        hash = hash * 31 + TotalCheckpoints.GetHashCode();
         hash = hash * 31 + Finished.GetHashCode();
         hash = hash * 31 + LapTimes.GetHashCode();
         hash = hash * 31 + LapTimer.GetHashCode();
@@ -1219,6 +1228,7 @@ namespace Quantum {
         serializer.Stream.Serialize(&p->CurrentLap);
         serializer.Stream.Serialize(&p->Position);
         serializer.Stream.Serialize(&p->TargetCheckpointIndex);
+        serializer.Stream.Serialize(&p->TotalCheckpoints);
         serializer.Stream.Serialize(&p->TotalLaps);
         QBoolean.Serialize(&p->Finished, serializer);
         QBoolean.Serialize(&p->LastWrongWay, serializer);
