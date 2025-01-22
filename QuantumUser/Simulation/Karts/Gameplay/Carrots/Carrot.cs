@@ -25,18 +25,7 @@ namespace Quantum
 
                 // 말의 유형에 따른 스태미나 회복량 적용
                 FP staminaBoost = FP._0;
-                switch (kart->SelectedHorseType)
-                {
-                    case HorseType.CarrotLover:
-                        staminaBoost = stats.CarrotLoverCarrotRecovery;
-                        break;
-                    case HorseType.PaceMaker:
-                        staminaBoost = stats.PaceMakerCarrotRecovery;
-                        break;
-                    case HorseType.SpeedRacer:
-                        staminaBoost = stats.SpeedRacerCarrotRecovery;
-                        break;
-                }
+                staminaBoost = stats.CarrotRecovery;
 
                 // 스태미나 증가 및 최대값 제한
                 kart->Stamina = FPMath.Min(kart->Stamina + staminaBoost, stats.maxStamina);

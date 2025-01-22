@@ -29,7 +29,7 @@ namespace Quantum
 
             if (IsDrifting)
             {
-                kart->ExternalForce += accelerationDirection * SideAcceleration * filter.KartInput->Throttle;
+                kart->ExternalForce += accelerationDirection * SideAcceleration;
             }
         }
 

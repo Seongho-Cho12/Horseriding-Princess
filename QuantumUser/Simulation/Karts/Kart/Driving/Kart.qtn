@@ -1,9 +1,3 @@
-enum HorseType {
-    CarrotLover,
-    PaceMaker,
-    SpeedRacer
-}
-
 component Kart {    
     [ExcludeFromPrototype] ComponentPrototypeRef Prototype;	
 	[ExcludeFromPrototype] FPVector3 Velocity;	
@@ -22,7 +16,6 @@ component Kart {
     [ExcludeFromPrototype] PhysicsQueryRef OverlapQuery;
 
     [ExcludeFromPrototype] FP Stamina;
-    [ExcludeFromPrototype] HorseType SelectedHorseType;
         
     asset_ref<KartStats> StatsAsset;
     asset_ref<KartVisuals> VisualAsset;

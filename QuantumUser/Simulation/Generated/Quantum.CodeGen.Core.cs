@@ -49,11 +49,6 @@ namespace Quantum {
   using RuntimeInitializeOnLoadMethodAttribute = UnityEngine.RuntimeInitializeOnLoadMethodAttribute;
   #endif //;
   
-  public enum HorseType : int {
-    CarrotLover,
-    PaceMaker,
-    SpeedRacer,
-  }
   public enum RaceState : int {
     None,
     Waiting,
@@ -873,9 +868,6 @@ namespace Quantum {
     [FieldOffset(48)]
     [ExcludeFromPrototype()]
     public FP Stamina;
-    [FieldOffset(4)]
-    [ExcludeFromPrototype()]
-    public HorseType SelectedHorseType;
     [FieldOffset(8)]
     public AssetRef<KartStats> StatsAsset;
     [FieldOffset(16)]
@@ -899,7 +891,6 @@ namespace Quantum {
         hash = hash * 31 + OffroadTime.GetHashCode();
         hash = hash * 31 + OverlapQuery.GetHashCode();
         hash = hash * 31 + Stamina.GetHashCode();
-        hash = hash * 31 + (Int32)SelectedHorseType;
         hash = hash * 31 + StatsAsset.GetHashCode();
         hash = hash * 31 + VisualAsset.GetHashCode();
         return hash;
@@ -909,7 +900,6 @@ namespace Quantum {
         var p = (Kart*)ptr;
         serializer.Stream.Serialize(&p->GroundedWheels);
         serializer.Stream.Serialize(&p->OffroadWheels);
-        serializer.Stream.Serialize((Int32*)&p->SelectedHorseType);
         AssetRef.Serialize(&p->StatsAsset, serializer);
         AssetRef.Serialize(&p->VisualAsset, serializer);
         FP.Serialize(&p->AirTime, serializer);
@@ -1004,37 +994,40 @@ namespace Quantum {
     public const Int32 ALIGNMENT = 8;
     [FieldOffset(76)]
     private fixed Byte _alignment_padding_[4];
-    [FieldOffset(56)]
+    [FieldOffset(8)]
     [ExcludeFromPrototype()]
-    public FP Throttle;
-    [FieldOffset(40)]
+    public QBoolean weakBoostPressed;
+    [FieldOffset(48)]
     [ExcludeFromPrototype()]
     public FP Steering;
     [FieldOffset(64)]
     [ExcludeFromPrototype()]
     public Button Drifting;
-    [FieldOffset(24)]
-    [ExcludeFromPrototype()]
-    public FP PreviousSteering;
-    [FieldOffset(0)]
-    [ExcludeFromPrototype()]
-    public QBoolean PreviousDrifting;
     [FieldOffset(32)]
     [ExcludeFromPrototype()]
+    public FP PreviousSteering;
+    [FieldOffset(4)]
+    [ExcludeFromPrototype()]
+    public QBoolean PreviousDrifting;
+    [FieldOffset(40)]
+    [ExcludeFromPrototype()]
     public FP SameSteeringTime;
-    [FieldOffset(16)]
+    [FieldOffset(24)]
     [ExcludeFromPrototype()]
     public FP NoSteeringTime;
-    [FieldOffset(8)]
+    [FieldOffset(16)]
     [ExcludeFromPrototype()]
     public FP DriftingInputTime;
-    [FieldOffset(48)]
+    [FieldOffset(56)]
     [ExcludeFromPrototype()]
     public FP SteeringOffset;
+    [FieldOffset(0)]
+    [ExcludeFromPrototype()]
+    public QBoolean PreviousBoostPressed;
     public override Int32 GetHashCode() {
       unchecked { 
         var hash = 20693;
-        hash = hash * 31 + Throttle.GetHashCode();
+        hash = hash * 31 + weakBoostPressed.GetHashCode();
         hash = hash * 31 + Steering.GetHashCode();
         hash = hash * 31 + Drifting.GetHashCode();
         hash = hash * 31 + PreviousSteering.GetHashCode();
@@ -1043,19 +1036,21 @@ namespace Quantum {
         hash = hash * 31 + NoSteeringTime.GetHashCode();
         hash = hash * 31 + DriftingInputTime.GetHashCode();
         hash = hash * 31 + SteeringOffset.GetHashCode();
+        hash = hash * 31 + PreviousBoostPressed.GetHashCode();
         return hash;
       }
     }
     public static void Serialize(void* ptr, FrameSerializer serializer) {
         var p = (KartInput*)ptr;
+        QBoolean.Serialize(&p->PreviousBoostPressed, serializer);
         QBoolean.Serialize(&p->PreviousDrifting, serializer);
+        QBoolean.Serialize(&p->weakBoostPressed, serializer);
         FP.Serialize(&p->DriftingInputTime, serializer);
         FP.Serialize(&p->NoSteeringTime, serializer);
         FP.Serialize(&p->PreviousSteering, serializer);
         FP.Serialize(&p->SameSteeringTime, serializer);
         FP.Serialize(&p->Steering, serializer);
         FP.Serialize(&p->SteeringOffset, serializer);
-        FP.Serialize(&p->Throttle, serializer);
         Button.Serialize(&p->Drifting, serializer);
     }
   }
@@ -1543,7 +1538,6 @@ namespace Quantum {
       typeRegistry.Register(typeof(HingeJoint3D), HingeJoint3D.SIZE);
       typeRegistry.Register(typeof(Hit), Hit.SIZE);
       typeRegistry.Register(typeof(Hit3D), Hit3D.SIZE);
-      typeRegistry.Register(typeof(Quantum.HorseType), 4);
       typeRegistry.Register(typeof(Quantum.Input), Quantum.Input.SIZE);
       typeRegistry.Register(typeof(Quantum.InputButtons), 4);
       typeRegistry.Register(typeof(IntVector2), IntVector2.SIZE);
@@ -1628,7 +1622,6 @@ namespace Quantum {
     public static void EnsureNotStrippedGen() {
       FramePrinter.EnsureNotStripped();
       FramePrinter.EnsurePrimitiveNotStripped<CallbackFlags>();
-      FramePrinter.EnsurePrimitiveNotStripped<Quantum.HorseType>();
       FramePrinter.EnsurePrimitiveNotStripped<Quantum.InputButtons>();
       FramePrinter.EnsurePrimitiveNotStripped<QueryOptions>();
       FramePrinter.EnsurePrimitiveNotStripped<Quantum.RaceState>();

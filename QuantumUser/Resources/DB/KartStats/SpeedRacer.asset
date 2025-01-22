@@ -10,10 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 733224c269dd4779a0fea890bb74ed79, type: 3}
-  m_Name: NimbleKart
+  m_Name: SpeedRacer
   m_EditorClassIdentifier: 
   Identifier:
-    Path: QuantumUser/Resources/DB/KartStats/NimbleKart
+    Path: QuantumUser/Resources/DB/KartStats/SpeedRacer
     Guid:
       Value: 320393746909041164
   overlapShapeSize:
@@ -303,3 +303,21 @@ MonoBehaviour:
     RawValue: 1638400
   groundDistance:
     RawValue: -3276
+  slowDecayRate:
+    RawValue: 0
+  StaminaConsumption:
+    RawValue: 0
+  CarrotRecovery:
+    RawValue: 0
+  NaturalRecovery:
+    RawValue: 0
+  BoostMultiplier:
+    RawValue: 0
+  maxStamina:
+    RawValue: 0
+  corneringStaminaMultiplier:
+    RawValue: 0
+  weakBoostStaminaCost:
+    RawValue: 0
+  strongBoostStaminaCost:
+    RawValue: 0

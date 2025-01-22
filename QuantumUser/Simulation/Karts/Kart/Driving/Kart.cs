@@ -137,7 +137,6 @@ namespace Quantum
 
             // Apply physics after position change so the next frame's broadphase queries have an accurate predicted position
 
-            Accelerate(frame, filter.Entity, filter.KartInput, transform->Forward);
             ApplyExternalForce(frame);
             ApplyGravity(frame, targetUp);
             ApplyFriction(frame, transform);
@@ -234,19 +233,6 @@ namespace Quantum
             Velocity -= friction;
         }
 
-        private void Accelerate(Frame frame, EntityRef entity, KartInput* input, FPVector3 direction)
-        {
-            if (!IsGrounded)
-            {
-                return;
-            }
-
-            KartStats stats = frame.FindAsset(StatsAsset);
-
-            Velocity += GetAcceleration(frame, entity) * frame.DeltaTime *
-                        FPMath.Clamp(input->Throttle, stats.minThrottle, 1) * direction;
-        }
-
         /// <summary>
         /// Returns a number between 0-1, 0 being stationary and 1 being max speed the car allows
         /// </summary>
@@ -304,20 +290,46 @@ namespace Quantum
         {
             if (frame.Unsafe.TryGetPointer<Kart>(entity, out var kart))
             {
-                var stats = frame.FindAsset(kart->StatsAsset);
+                KartStats stats = frame.FindAsset(StatsAsset);
 
-                // 기본 스태미나 소모량 적용
-                FP staminaConsumption = stats.PaceMakerStaminaConsumption * frame.DeltaTime;
+                // 스태미나 감소 속도 적용
+                FP staminaConsumption = stats.StaminaConsumption * frame.DeltaTime;
 
-                // 조향 중이라면 corneringStaminaMultiplier 적용
+                // 조향 시 추가 스태미나 소모
                 if (FPMath.Abs(input->Steering) > FP._0_05)
                 {
                     staminaConsumption *= stats.corneringStaminaMultiplier;
                 }
 
-                // 스태미나 감소 적용 및 최소값 제한
-                FP newStamina = kart->Stamina - staminaConsumption;
-                kart->Stamina = FPMath.Max(newStamina, FP._0);
+                // 부스트 입력 처리
+                if (input->weakBoostPressed)
+                {
+                    if (kart->Stamina >= stats.weakBoostStaminaCost)
+                    {
+                        // 스태미나 소모 및 속도 증가 적용
+                        kart->Stamina -= stats.weakBoostStaminaCost;
+                        kart->Velocity += kart->Velocity.Normalized * stats.BoostMultiplier * 3;
+                        kart->Velocity = FPVector3.ClampMagnitude(kart->Velocity, stats.maxSpeed);
+
+                        // 부스트 적용 후 입력 초기화
+                        input->weakBoostPressed = false;
+                    }
+                }
+                
+                // 속도가 특정 값 이상이면 천천히 스태미나 소모
+                if (kart->Velocity.SqrMagnitude > FP.FromFloat_UNSAFE(150.0f))
+                {
+                    kart->Stamina -= staminaConsumption;
+                }
+                else
+                {
+                    // 특정 속도 이하일 때 스태미나 회복
+                    kart->Stamina += stats.NaturalRecovery * frame.DeltaTime;
+                    kart->Stamina = FPMath.Min(kart->Stamina, stats.maxStamina);
+                }
+
+                // 최소 스태미나 보장
+                kart->Stamina = FPMath.Max(kart->Stamina, FP._0);
 
                 frame.Set(entity, *kart);
             }

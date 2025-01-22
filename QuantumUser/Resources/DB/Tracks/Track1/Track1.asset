@@ -7733,11 +7733,11 @@ MonoBehaviour:
             RawValue: 140247
         Rotation:
           X:
-            RawValue: 17694720
+            RawValue: 19005440
           Y:
-            RawValue: 0
+            RawValue: 11796480
           Z:
-            RawValue: 0
+            RawValue: 11796480
     - rid: 3961011654338019329
       type: {class: PhysicsCollider3DPrototype, ns: Quantum.Prototypes, asm: Quantum.Engine}
       data:
