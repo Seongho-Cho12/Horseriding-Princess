@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics;
 using Photon.Deterministic;
 using Quantum.Collections;
 
@@ -15,6 +16,8 @@ namespace Quantum
         {
             var positions = frame.ResolveList(StartPositions);
             frame.Unsafe.TryGetPointer(positions[playerIndex], out Transform3D* transform3D);
+            UnityEngine.Debug.Log($"Start position: {transform3D->Position}");
+            UnityEngine.Debug.Log($"Start rotation: {transform3D->Rotation}");
             pos = transform3D->Position;
             rot = transform3D->Rotation;
         }

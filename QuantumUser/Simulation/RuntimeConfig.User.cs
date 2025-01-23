@@ -9,9 +9,9 @@ namespace Quantum
     {
         public AssetRef<RaceSettings> RaceSettings;
         public byte AICount;
-        public byte DriverCount = 12;
+        public byte DriverCount = 2;
 
-        public bool FillWithAI = true;
+        public bool FillWithAI = false;
 
         public FP CountdownTime = 5;
         public FP MaxRaceTime = 300;

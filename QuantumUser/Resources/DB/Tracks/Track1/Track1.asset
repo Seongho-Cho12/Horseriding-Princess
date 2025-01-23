@@ -6117,6 +6117,8 @@ MonoBehaviour:
   - Components:
     - rid: 3625315719844986880
   - Components:
+    - rid: 8084373948638167040
+  - Components:
     - rid: 3961011654338019328
     - rid: 3961011654338019329
     - rid: 3961011654338019330
@@ -9381,6 +9383,23 @@ MonoBehaviour:
             RawValue: -851968
           Y:
             RawValue: -196608
+          Z:
+            RawValue: 0
+    - rid: 8084373948638167040
+      type: {class: Transform3DPrototype, ns: Quantum.Prototypes, asm: Quantum.Engine}
+      data:
+        Position:
+          X:
+            RawValue: -458752
+          Y:
+            RawValue: 0
+          Z:
+            RawValue: 196608
+        Rotation:
+          X:
+            RawValue: 0
+          Y:
+            RawValue: 0
           Z:
             RawValue: 0
     - rid: 8116612295284490240

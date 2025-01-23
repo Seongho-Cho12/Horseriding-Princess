@@ -151,6 +151,7 @@ namespace Quantum
             }
 
             var driverData = frame.FindAsset(driverAsset);
+            UnityEngine.Debug.Log($"spawnaidriver");
             EntityRef kartEntity = SpawnKart(frame, driverData.KartVisuals, driverData.KartStats);
             frame.Add<AIDriver>(kartEntity);
 
@@ -169,7 +170,7 @@ namespace Quantum
 
             for (int i = 0; i < count; i++)
             {
-                SpawnAIDriver(frame, rs.GetRandomAIConfig(frame));
+                // SpawnAIDriver(frame, rs.GetRandomAIConfig(frame));
             }
         }
 
@@ -185,15 +186,18 @@ namespace Quantum
 
             RaceSettings rs = frame.FindAsset(frame.RuntimeConfig.RaceSettings);
 
+            UnityEngine.Debug.Log($"FillWithAI missingDrivers: {missingDrivers}");
+
             for (int i = 0; i < missingDrivers; i++)
             {
-                SpawnAIDriver(frame, rs.GetRandomAIConfig(frame));
+                // SpawnAIDriver(frame, rs.GetRandomAIConfig(frame));
             }
         }
 
         public void OnPlayerAdded(Frame frame, PlayerRef player, bool firstTime)
         {
             var data = frame.GetPlayerData(player);
+            UnityEngine.Debug.Log($"onplayeradded");
             EntityRef kartEntity = SpawnKart(frame, data.KartVisuals, data.KartStats);
 
             // RaceTrack 싱글턴 가져오기
@@ -218,6 +222,7 @@ namespace Quantum
         private EntityRef SpawnKart(Frame frame, AssetRef<KartVisuals> visuals, AssetRef<KartStats> stats)
         {
             int driverIndex = frame.ComponentCount<Kart>();
+            UnityEngine.Debug.Log($"driverIndex: {driverIndex}");
 
             RaceSettings settings = frame.FindAsset(frame.RuntimeConfig.RaceSettings);
             var prototype = frame.FindAsset(settings.KartPrototype);
@@ -227,7 +232,10 @@ namespace Quantum
 
             if (frame.Unsafe.TryGetPointer<Transform3D>(entity, out var transform))
             {
+                UnityEngine.Debug.Log($"driverIndex: {driverIndex}");
                 track->GetStartPosition(frame, driverIndex, out FPVector3 pos, out FPQuaternion rot);
+                UnityEngine.Debug.Log($"Start position 2: {transform->Position}");
+                UnityEngine.Debug.Log($"Start rotation 2: {transform->Rotation}");
                 transform->Position = pos;
                 transform->Rotation = rot;
             }
