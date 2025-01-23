@@ -389,7 +389,7 @@ namespace Quantum
 
                 if (frame.Unsafe.TryGetPointer<Transform3D>(otherKartEntity, out Transform3D* otherKartTransform))
                 {
-                    FPVector3 directionToOther = kartPosition - otherKartTransform->Position;
+                    FPVector3 directionToOther = otherKartTransform->Position - kartPosition;
                     FP distance = directionToOther.Magnitude;
 
                     if (distance < FP.FromFloat_UNSAFE(5.0f))  // 슬립스트림 거리 조건
